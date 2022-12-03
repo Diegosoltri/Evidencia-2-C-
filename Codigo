@@ -1,0 +1,326 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <windows.h>
+#include <iostream>
+#include <cstring>
+#define N 50
+using namespace std;
+
+//A01808035
+// DIEGO JAVIER SOLORZANO TRINIDAD
+//CLASES
+
+class pyme {
+// ATRIBUTOS
+private:
+    string nomdirector;
+    int numerotrabajadores;
+    double generadorpesos;
+public:
+// METODOS
+    string empresa;
+    string razonsocial;
+    string direcion;
+    constructorpyme();
+    mostrarpyme();
+};
+// HERENCIA APLICADA PARA PYME Y TRABJADOR
+class trabajador : public pyme{
+    private:
+        int edad;
+        string puesto;
+        float sueldo;
+    public:
+        string nombre;
+        constructortrabajador();
+        mostrartrabajador();
+};
+
+// CONSTRUCTOR CLASE PYME
+pyme::constructorpyme(){
+    cout<<"Introduzca el nombre de la empresa: "<<endl;
+    cin >> empresa;
+
+    cout<<"Introduzca la razon social: "<<endl;
+    cin >> razonsocial;
+
+    cout<<"Introduzca la razon social: "<<endl;
+    cin >> razonsocial;
+
+    cout<<"Introduzca la dirrecion de la PYME: "<<endl;
+    cin >> direcion;
+
+    cout<<"Introduzca el nombre del director: "<<endl;
+    cin >> nomdirector;
+
+    cout<<"Introduzca el numero de trabajadores: "<<endl;
+    cin >> numerotrabajadores;
+
+    cout<<"Introduzca la cantidad de pesos generada en el año: "<<endl;
+    cin >> generadorpesos;
+
+    cout<<"PYME AÑADIDA, PRESIONE UNA TECLA PARA CONTINUAR"<<endl;
+}
+
+pyme::mostrarpyme(){
+    cout<<"Informacion del PYME"<<endl;
+    cout<< "Nombre de la empresa: "<< empresa << endl;
+    cout<< "Razon social: "<< razonsocial << endl;
+    cout<< "Dirrecion de la PYME: "<< direcion << endl;
+    cout<< "Nombre del director: "<< nomdirector << endl;
+    cout<< "Numero de trabjadores: "<< numerotrabajadores << endl;
+    cout<< "Cantidad de pesos generada en el año: "<< generadorpesos << endl;
+}
+
+// VISUAL
+void dibujarCuadro(int x1,int y1,int x2,int y2);
+void gotoxy(int x,int y);
+void limpia();
+void menu();
+
+// 	LIMITES
+pyme limite[3];
+trabajador limite1[3];
+
+// METODO DE BUSQUEDA
+string busqueda;
+int numero_busquedas;
+int consulta();
+// CONTADORES
+int contador_p = 1;
+int contador_t = 1;
+
+// AJUSTE VISUALES E IMPRESION DE MENU
+int main(){
+	system("mode con: cols=80 lines=25"); //ADAPTACIO PARA LA CONSOLLA
+	dibujarCuadro(0,0,78,24);
+	dibujarCuadro(1,1,77,3);
+	gotoxy(16,2); cout << "           I N V E N T A R I O";
+	menu();
+	getch();
+	return 0;
+}
+
+// FUNCION DEL MENU 
+void menu(){
+	char op;
+	do{
+		limpia();
+		gotoxy(3,6); cout << "  MENU PRINCIPAL";
+		gotoxy(3,9); cout << "  (1) Agregar una PYME";
+		gotoxy(3,11); cout << "  (2) Agregar un Trabajador";
+		gotoxy(3,13); cout << "  (3) Consultar PYME";
+		gotoxy(3,15); cout << "  (4) Consultar Trabajador";
+		gotoxy(3,17); cout << "  (5) Cerrar";
+		gotoxy(3,19); cout << "  Ingrese opcion: ";
+		cin >> op;
+		
+		if(op!='1' && op!='2' && op!='3' && op!='4' && op!='5'){
+			gotoxy(3,21); cout << "  Error al ingresar valores. Presione una tecla para volver a intentar.";
+			getch();
+			gotoxy(3,22); cout << "                                                                       ";
+			gotoxy(3,17); cout << "                                                                       ";
+		}
+			
+	}while(op!='1' && op!='2' && op!='3' && op!='4' && op!='5');
+	
+	
+	if (op=='1'){
+		limpia(); 
+		gotoxy(3,6);
+		if (contador_p < 7){
+			contador_p += 1;
+			limite[contador_p].constructorpyme();
+
+		}
+		else {
+			cout << "  Se ha superado la cantidad maxima de PYME permitidos.";
+			gotoxy(3,8); cout << "  Presiona una tecla para volver al MENU.";
+		}
+		getch();
+		menu();
+	}
+	
+
+	if (op=='2'){
+		limpia();
+		gotoxy(3,6);
+		if (contador_p >= 0 && contador_t >= 0){
+	    contador_t += 1;
+ 		limite1[contador_t].constructortrabajador();
+		}
+		else if (contador_p <= 0){
+			cout << "Primero se debe crear una PYME para añadir trabjadores.";
+			gotoxy(3,8); cout << "  Presiona una tecla para continuar.";
+		}
+		else if (contador_t >= 7){
+			cout << "  Se ha superado la cantidad maxima de trabajadores.";
+			gotoxy(3,8); cout << "  Presiona una tecla para continuar.";
+		}
+		getch();  
+		menu(); 
+	}
+	
+	if (op=='3'){
+		limpia();
+		gotoxy(3,6); 
+		cout << "\n$   Introduzca la PYME que desea consultar: ";
+		cin >> busqueda;
+		int i = consulta();
+		if (i >= 0){
+			limpia();
+			gotoxy(3,6);
+			limite[i].mostrarpyme();
+			cout << "\n$";
+			cout << "\n$   Presiona una tecla para continuar.";
+			getch(); 
+		}
+		else {
+			limpia();
+			gotoxy(3,6); 
+			cout << "\n$   Pyme no registrada.";
+			cout << "\n$";
+			cout << "\n$   Presiona una tecla para continuar.";
+			getch();  
+		}
+		menu();
+	}
+
+	if (op=='4'){
+		numero_busquedas = 0;
+		limpia();
+		gotoxy(3,6); 
+		cout << "\n$   Introduzca el nombre del trabajador que desea consultar: ";
+    	cin >> busqueda;
+    	for (int i = 0; i < 3; i++) {
+			if (limite1[i].nombre == busqueda){
+				numero_busquedas = 1;
+				limpia();
+				gotoxy(3,6);
+				limite1[i].mostrartrabajador();
+				cout << "\n$";
+				cout << "\n$   Presiona una tecla para continuar.";
+				getch();  
+			}
+    	}
+		if (numero_busquedas == 0){
+				limpia();
+				gotoxy(3,6); cout << "\n$   Trabajador no encontrado en los registros.";
+				cout << "\n$";
+				cout << "\n$   Presiona una tecla para continuar.";
+				getch();  
+		}
+		menu(); 
+	}
+	
+	if (op=='5')
+		exit(0);
+	
+}
+
+// FUNCION PARA QUE REGRESE EL DATO EMPRESA
+int consulta(){
+	int i;
+    for (i = 0; i < 3; i++) {
+		if (limite[i].empresa == busqueda){
+			return i;
+		}
+    }
+	return -1;
+}
+
+//repite y limpia consola
+void limpia(){
+	int i,j;
+	for(i=5;i<=23;i++){
+		for(j=3;j<=76;j++){
+			gotoxy(j,i); printf(" ");}}
+}
+
+void vacio(){
+	int i,j;
+	for(int i = 0; i < 7; i++){
+		limite[i].limite = 0;
+		for(int i = 0; j < 10; j++){
+			limite[i].limite[j].contador_p = 0;
+		}
+	}
+}
+//VISUALES
+void gotoxy(int x,int y){  
+      HANDLE hcon;  
+      hcon = GetStdHandle(STD_OUTPUT_HANDLE);  
+      COORD dwPos;  
+      dwPos.X = x;  
+      dwPos.Y= y;  
+      SetConsoleCursorPosition(hcon,dwPos);  
+}
+void dibujarCuadro(int x1,int y1,int x2,int y2){
+    int i;
+    for (i=x1;i<x2;i++){
+		gotoxy(i,y1); cout << "-";
+		gotoxy(i,y2); cout << "-";
+    }
+
+    for (i=y1;i<y2;i++){
+		gotoxy(x1,i); cout << "$";
+		gotoxy(x2,i); cout << "$";
+    }
+    
+    gotoxy(x1,y1); cout << "$";
+    gotoxy(x1,y2); cout << "$";
+    gotoxy(x2,y1); cout << "$";
+    gotoxy(x2,y2); cout << "$";
+}
+//CONSTUCTOR DEL TRABJADOR
+trabajador::constructortrabajador(){
+    cout << "\n$  Introduzca el nombre del Trabajador: ";
+    cin >> nombre; 
+
+    cout << "\n$   Introduzca la edad del Trabajador: ";
+    cin >> edad; 
+
+    cout << "\n$   Introduzca el puesto del trabajador: ";
+    cin >> puesto; 
+
+   	cout << "\n$   Introduzca el suelto del trabjador: ";
+	cin >> sueldo; 
+
+    numero_busquedas = 0;
+    while (numero_busquedas == 0) {
+        gotoxy(0,17); cout << "$                                                                            $";
+        gotoxy(0,17); std::cout << "$   Introduzca el nombre de la PYME en la que se encuentra el trabajador: ";
+       	cin >> busqueda;
+        int i = consulta();
+        if (i >= 0){
+            empresa = limite[i].empresa;
+            razonsocial = limite[i].razonsocial;
+            direcion = limite[i].direcion;
+            numero_busquedas = 1;
+        }
+        else {
+            gotoxy(0,19);cout << "$   Pyme no encontrada en la base de datos. Presione una tecla para continuar.";
+        }
+    }
+    gotoxy(0,19); cout << "$                                                                            $";
+    gotoxy(0,19); cout << "$   Trabajador anadido, Presiona una tecla para continuar.";
+}
+
+// SEGUNDO CONSTRUCTOR
+trabajador::mostrartrabajador(){
+    cout << "\n$   Nombre del Trabajador: " << nombre; 
+    cout << "\n$";
+    cout << "\n$   Edad: " << edad; 
+    cout << "\n$";
+    cout << "\n$   Puesto: " << puesto; 
+    cout << "\n$";
+    cout << "\n$   Sueldo: " << sueldo; 
+    cout << "\n$";
+    cout << "\n$   Nombre de la empresa donde trabaja: " << empresa;
+    cout << "\n$";
+    cout << "\n$   Razon social de la empresa donde trabaja: " << razonsocial;
+    cout << "\n$";
+    cout << "\n$   Direccion de la empresa donde trabaja: " << direcion;
+}
+
